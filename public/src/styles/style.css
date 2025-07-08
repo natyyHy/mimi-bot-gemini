@@ -128,8 +128,7 @@ header h2 {
 
 .orelha {
     position: absolute;
-    top: -23px;
-
+    top: -15px;
     width: 0;
     height: 0;
     border-left: 60px solid transparent;
@@ -139,11 +138,11 @@ header h2 {
 }
 
 .orelha.left {
-    left: 0px;
+    left: 10px;
 }
 
 .orelha.right {
-    right: 0px;
+    right: 10px;
 }
 
 #input-ctn {
@@ -316,4 +315,33 @@ header h2 {
 
 #chat-container::-webkit-scrollbar-thumb:hover {
   background-color: var(--user-msg);
+}
+
+.loading-message::after{
+    content: '...';
+    display: inline-block;
+    vertical-align: bottom;
+    animation: pontoPiscar 1.4s infinite;
+    animation-fill-mode: forwards;
+    width: 20px;
+    text-align: left;
+}
+
+
+@keyframes pontoPiscar {
+    0% {
+        content: '.';
+    }
+
+    33% {
+        content: '..';
+    }
+
+    66%{
+        content: '...';
+    }
+
+    100% {
+        content: '.';
+    }
 }

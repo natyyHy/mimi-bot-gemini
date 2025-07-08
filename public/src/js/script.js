@@ -54,8 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // enviar mensagem
   const enviarMensagem = async () => {
-    const pergunta = userInput.value
+    const pergunta = userInput.value.trim()
     const imagemEnviar = imagemUrlTemporaria
+    const arquivoImagem = imageInput.files[0]
     //nao enviar mensagem se nao tiver nem texto nem imagem
     if(!pergunta.trim() && !imageBase){ 
       return
@@ -65,6 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //limpar os campos apos envio
     userInput.value = ''
+
+    const loadingMessageElement = adicionarMensagem('Miando respostas', 'bot')
+    loadingMessageElement.classList.add('loading-message')
+
+    //desativa
+    userInput.disabled = true
+    botaoEnviar.disabled = true
 
     try {
       //corpo requisicao text e/ou imagem
@@ -89,11 +97,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await response.json()
-      adicionarMensagem(data.resposta,'bot')
+
+      const pelement = loadingMessageElement.querySelector('p')
+      if(pelement){
+        pelement.textContent = data.resposta
+      }
 
     } catch (error) {
       console.error('Erro ao conectar ao Back End: ', error)
-      adicionarMensagem('Que estranho... algo deu errado na conexão. Tente de novo.', 'bot')
+      const pelement = loadingMessageElement.querySelector('p')
+      if(pelement){
+        pelement.textContent = 'Que estranho... algo deu errado na conexão. Tente de novo.'
+      }
+    } finally {
+      //SEMPRE remove a classe de animação e reativa os inputs
+      loadingMessageElement.classList.remove('loading-message')
+      userInput.disabled = false
+      botaoEnviar.disabled = false
+      userInput.focus()
     }
   }
 
@@ -125,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     chatBox.appendChild(divMensagem);
     chatBox.scrollTop = chatBox.scrollHeight
+
+    return divMensagem
   }
 
   function removerImagem(){
