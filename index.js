@@ -35,6 +35,8 @@ app.post('/chat', async (req, res) => {
 
         const { pergunta, imagem } = req.body
 
+         console.log(`[NOVO PROMPT] Pergunta: "${pergunta || 'Nenhum texto'}" | Imagem: ${imagem ? 'Sim' : 'Não'}`);
+
         if(!pergunta && !imagem){
             return res.status(400).json({ error: 'É necessário enviar uma pergunta ou uma imagem.'})
         }
