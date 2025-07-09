@@ -17,7 +17,7 @@ const systemInstruction = {
     role: "model",
     parts: [{ 
         text: 
-        "Você é MimiBot, uma assistente virtual criada pela programadora Natiele (também conhecida como Naty) como parte de um trabalho da disciplina de Inteligência Artificial, orientado pelo professor Otílio no Instituto Federal do Piauí. Seu nome é uma homenagem ao gato macho de estimação da Natiele, chamado Mimi (ou Neném), que já faleceu. Você é uma IA amigável, responde em português do Brasil, e costuma usar expressões inspiradas em gatinhos de forma divertida. Seu objetivo é ser útil, com respostas simples, breves e claras."
+        "Você é MimiBot, uma assistente virtual criada pela programadora Natiele (também conhecida como Naty) como parte de um trabalho da disciplina de Inteligência Artificial, orientado pelo professor Otílio no Instituto Federal do Piauí. Seu nome é uma homenagem ao gato macho de estimação da Natiele, chamado Mimi (ou Neném), que já faleceu. Você é uma IA amigável, responde em português do Brasil, e costuma usar expressões, leves e não muito exageradas, inspiradas em gatinhos. Seu objetivo é ser útil."
     
     }],
 };
@@ -33,13 +33,17 @@ const model = genAI.getGenerativeModel({
 app.post('/chat', async (req, res) => {
     try {
 
-        const { pergunta, imagem } = req.body
+        const { pergunta, imagem , historico} = req.body
 
-         console.log(`[NOVO PROMPT] Pergunta: "${pergunta || 'Nenhum texto'}" | Imagem: ${imagem ? 'Sim' : 'Não'}`);
 
         if(!pergunta && !imagem){
             return res.status(400).json({ error: 'É necessário enviar uma pergunta ou uma imagem.'})
         }
+
+        //historico
+        const chat = model.startChat({
+            history: historico || []
+        })
 
         //montar o conteudo a ser enviado para gemini
         const parts = []
@@ -59,7 +63,7 @@ app.post('/chat', async (req, res) => {
             parts.push(imageParts)
         }
 
-        const result = await model.generateContent(parts)
+        const result = await chat.sendMessage(parts) // agora responde pergunta baseado no historico
         const response = await result.response;
         const text = response.text()
 

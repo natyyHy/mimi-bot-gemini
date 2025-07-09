@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let imageBase = null
   let imagemUrlTemporaria = null
+  let historicoConversa = []
 
   // abrir meu input de selecionar a imagem quando o notao botaoUpload ser apertado
   botaoUpload.addEventListener('click', () => {
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //criar botao remover
     const removerBotao = document.createElement('button')
     removerBotao.className = 'remove-image-btn'
-    removerBotao.innerHTML = '<img src="./src/imgs/close.png" width="10px"\>' // sinal de multiplicacao X
+    removerBotao.innerHTML = '<img src="./src/imgs/close.png" width="10px"\>'
     removerBotao.onclick = removerImagem
 
     //limpar e preencher container da previa
@@ -64,6 +65,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     adicionarMensagem(pergunta, 'user', imagemEnviar)
 
+    //colocar no historico
+    const userParts = []
+    if(pergunta){
+      userParts.push({text: pergunta})
+    }
+
+    if(imageBase){
+      userParts.push({
+        inlineData: {
+          data: imageBase,
+          mimeType: arquivoImagem.type,
+        }
+      })
+    }
+
+    historicoConversa.push({role: 'user' , parts: userParts})
+
     //limpar os campos apos envio
     userInput.value = ''
 
@@ -79,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const corpoRequisicao = {
         pergunta: pergunta,
         imagem: imageBase, //pode ser null
+        historico: historicoConversa,
       }
 
       // Limpa a imagem da interface depois de preparar a requisicao
@@ -102,6 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if(pelement){
         pelement.textContent = data.resposta
       }
+
+      historicoConversa.push({role: 'model', parts: [{text: data.resposta}]})
 
     } catch (error) {
       console.error('Erro ao conectar ao Back End: ', error)
