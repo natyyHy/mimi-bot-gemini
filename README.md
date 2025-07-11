@@ -36,7 +36,7 @@ O projeto foi construído utilizando um conjunto de tecnologias modernas para fr
 
 ### **Hospedagem**
 - **Render:** Plataforma PaaS (Platform as a Service) para hospedagem do servidor Node.js, com um link público e plano gratuito.
-
+- **Link:** https://mimi-bot-gemini.onrender.com
 ---
 
 ## 🚀 Como Rodar o Projeto Localmente
